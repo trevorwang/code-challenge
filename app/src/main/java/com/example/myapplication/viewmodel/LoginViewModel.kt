@@ -78,7 +78,7 @@ class LoginViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _user.value = userRepo.currentUser()
-            _favorites.value = userRepo.allFavorites()
+            _favorites.value = if (_user.value == null) listOf() else userRepo.allFavorites()
         }
     }
 }

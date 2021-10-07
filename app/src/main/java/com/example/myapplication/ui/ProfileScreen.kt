@@ -18,6 +18,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +66,8 @@ fun ProfileScreen(
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .centerCrop(),
                         placeHolder = Icons.Default.AccountCircle,
-                        error = Icons.Default.AccountCircle
+                        error = Icons.Default.AccountCircle,
+                        colorFilter = ColorFilter.tint(Color.White)
                     )
 
                     Column(modifier = Modifier.padding(8.dp)) {
