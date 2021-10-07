@@ -27,31 +27,12 @@ class NewsViewModel @Inject constructor(
         initialLoadSize = 20
     ), pagingSourceFactory = { NewsPagingDataSource(newsRepo = newsRepo) }).flow
 
-    private val _favorites = MutableLiveData<List<Favorite>>(listOf())
-    val favorites: LiveData<List<Favorite>> = _favorites
 
-    fun toggleFavorite(news: News, checked: Boolean) {
-        val set = _favorites.value ?: mutableSetOf()
-        _favorites.value = set.toMutableList().also { list ->
-            if (checked) {
-                viewModelScope.launch {
-                    userRepo.addFavorite(news)
-                }
-                list.add(Favorite(0, news = news))
-            } else {
-                val f = list.first { it.news.id == news.id }
-                list.remove(f)
-                viewModelScope.launch {
-                    userRepo.removeFavorite(news.id)
-                }
-            }
-        }
-    }
 
 
     init {
         viewModelScope.launch {
-            _favorites.value = userRepo.allFavorites()
+
         }
     }
 }

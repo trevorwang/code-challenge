@@ -72,7 +72,7 @@ private fun NewsList(
     onItemClicked: ((News) -> Unit)? = null,
     navController: NavController? = null
 ) {
-    val favorites by vm.favorites.observeAsState()
+    val favorites by loginViewModel.favorites.observeAsState()
     val user by loginViewModel.user.observeAsState()
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -97,7 +97,7 @@ private fun NewsList(
                         if (user == null) {
                             navController?.navigate(Screen.Login.route)
                         } else {
-                            vm.toggleFavorite(news, toggle)
+                            loginViewModel.toggleFavorite(news, toggle)
                         }
                     })
                 }

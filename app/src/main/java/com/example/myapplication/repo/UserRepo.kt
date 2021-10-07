@@ -3,7 +3,6 @@ package com.example.myapplication.repo
 import com.example.myapplication.data.entity.Favorite
 import com.example.myapplication.data.entity.News
 import com.example.myapplication.data.entity.User
-import com.example.myapplication.data.entity.Result
 
 interface UserRepo {
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.entity.Favorite
+import com.example.myapplication.data.entity.News
 import com.example.myapplication.data.entity.User
 import com.example.myapplication.repo.UserRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +20,27 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> = _user
 
-
-    private val _favorites = MutableLiveData<List<Favorite>>()
+    private val _favorites = MutableLiveData<List<Favorite>>(listOf())
     val favorites: LiveData<List<Favorite>> = _favorites
+
+
+    fun toggleFavorite(news: News, checked: Boolean) {
+        val set = _favorites.value ?: mutableSetOf()
+        _favorites.value = set.toMutableList().also { list ->
+            if (checked) {
+                viewModelScope.launch {
+                    userRepo.addFavorite(news)
+                }
+                list.add(Favorite(0, news = news))
+            } else {
+                val f = list.first { it.news.id == news.id }
+                list.remove(f)
+                viewModelScope.launch {
+                    userRepo.removeFavorite(news.id)
+                }
+            }
+        }
+    }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
@@ -29,8 +48,8 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
             result?.let {
                 _user.value = it
             }
-            Timber.d("$result")
             _favorites.value = userRepo.allFavorites()
+            Timber.d("$result")
         }
     }
 
@@ -45,8 +64,7 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
     init {
         viewModelScope.launch {
             _user.value = userRepo.currentUser()
-
-            _favorites.value = if (user.value == null) listOf() else userRepo.allFavorites()
+            _favorites.value = userRepo.allFavorites()
         }
     }
 }

@@ -4,10 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.myapplication.data.entity.News
 import com.example.myapplication.repo.NewsRepo
-import kotlinx.coroutines.delay
-import java.lang.Exception
 import javax.inject.Inject
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 class NewsPagingDataSource @Inject constructor(private val newsRepo: NewsRepo) :
@@ -22,7 +19,6 @@ class NewsPagingDataSource @Inject constructor(private val newsRepo: NewsRepo) :
 
         return try {
             val newsList = newsRepo.nbaIndex(pos, params.loadSize).newsList
-            delay(Duration.seconds(2))
             LoadResult.Page(
                 newsList,
                 if (pos <= 1) null else pos - 1,

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -35,10 +36,13 @@ fun ProfileScreen(
     newsViewModel: NewsViewModel
 ) {
     val user = loginViewModel.user.observeAsState()
-    val favorites = newsViewModel.favorites.observeAsState()
+    val favorites = loginViewModel.favorites.observeAsState()
     Box(modifier = Modifier.fillMaxSize()) {
 
-        LazyColumn(modifier = Modifier.padding(top = 56.dp)) {
+        LazyColumn(
+            modifier = Modifier.padding(top = 56.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
             item {
                 Row(modifier = Modifier.clickable {
@@ -85,7 +89,7 @@ fun ProfileScreen(
                 NewsRow(modifier = Modifier.clickable {
                     navController?.navigate("${Screen.WebView.route}?url=${it.news.url}")
                 }, news = it.news, favorite = true, onChecked = { _ ->
-                    newsViewModel.toggleFavorite(it.news, false)
+                    loginViewModel.toggleFavorite(it.news, false)
                 })
 
             }
@@ -93,6 +97,7 @@ fun ProfileScreen(
 
             item {
                 if (user.value != null) {
+                    Divider(color = Color.Transparent,thickness = 80.dp)
                     TextButton(onClick = {
                         loginViewModel.logout()
                     }) {
