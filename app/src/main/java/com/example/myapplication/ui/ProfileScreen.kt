@@ -87,7 +87,7 @@ fun ProfileScreen(
 
             items(favorites.value ?: listOf()) {
                 NewsRow(modifier = Modifier.clickable {
-                    navController?.navigate("${Screen.WebView.route}?url=${it.news.url}")
+                    navController?.navigate("${Screen.WebView.route}?url=${it.news.url}&title=${it.news.title}&id=${it.news.id}")
                 }, news = it.news, favorite = true, onChecked = { _ ->
                     loginViewModel.toggleFavorite(it.news, false)
                 })
@@ -97,7 +97,7 @@ fun ProfileScreen(
 
             item {
                 if (user.value != null) {
-                    Divider(color = Color.Transparent,thickness = 80.dp)
+                    Divider(color = Color.Transparent, thickness = 80.dp)
                     TextButton(onClick = {
                         loginViewModel.logout()
                     }) {

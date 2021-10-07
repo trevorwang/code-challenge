@@ -26,6 +26,7 @@ import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.myapplication.viewmodel.LoginViewModel
 import com.example.myapplication.viewmodel.NewsViewModel
+import timber.log.Timber
 
 
 val items = listOf(Screen.News, Screen.Profile)
@@ -36,22 +37,32 @@ fun Main() {
     val newsViewModel = viewModel<NewsViewModel>()
     val loginModel = viewModel<LoginViewModel>()
     Scaffold(bottomBar = {
-        BottomNavigation() {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
-            items.forEach { screen ->
-                BottomNavigationItem(selected = currentDestination?.hierarchy?.any { it.route === screen.route } == true,
-                    icon = screen.icon,
-                    label = { Text(screen.name) },
-                    onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+
+        Timber.d("current route : ${navController.currentDestination?.route}")
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+        if (arrayOf(
+                Screen.News.route,
+                Screen.Profile.route
+            ).contains(currentDestination?.route)
+        ) {
+            BottomNavigation() {
+//                val navBackStackEntry by navController.currentBackStackEntryAsState()
+//                val currentDestination = navBackStackEntry?.destination
+                items.forEach { screen ->
+                    BottomNavigationItem(selected = currentDestination?.hierarchy?.any { it.route === screen.route } == true,
+                        icon = screen.icon,
+                        label = { Text(screen.name) },
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    })
+                        })
+                }
             }
         }
     }) { paddingValues ->
