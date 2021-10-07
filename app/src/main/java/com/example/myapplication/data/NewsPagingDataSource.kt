@@ -19,6 +19,7 @@ class NewsPagingDataSource @Inject constructor(private val newsRepo: NewsRepo) :
 
         return try {
             val newsList = newsRepo.nbaIndex(pos, params.loadSize).newsList
+            newsRepo.insertAll(newsList = newsList)
             LoadResult.Page(
                 newsList,
                 if (pos <= 1) null else pos - 1,

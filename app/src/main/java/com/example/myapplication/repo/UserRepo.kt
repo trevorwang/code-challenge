@@ -21,4 +21,6 @@ interface UserRepo {
     suspend fun allFavorites(): List<Favorite>
 
     suspend fun currentUser(): User?
+
+    suspend fun getFavorite(newsId: String): List<Favorite>
 }

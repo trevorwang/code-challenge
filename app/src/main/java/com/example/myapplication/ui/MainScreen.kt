@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -62,7 +64,7 @@ fun Main() {
         ) {
             composable(Screen.News.route) {
                 NewsScreen(newsViewModel, loginModel, lazyItems, onItemClicked = {
-                    navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}")
+                    navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}&id=${it.id}")
                 }, navController = navController)
             }
 
@@ -79,25 +81,46 @@ fun Main() {
             }
 
             composable(
-                "${Screen.WebView.route}?url={url}&title={title}",
-                arguments = listOf(navArgument("url") {}, navArgument("title") { nullable = true })
+                "${Screen.WebView.route}?url={url}&title={title}&id={id}",
+                arguments = listOf(
+                    navArgument("url") {},
+                    navArgument("title") { nullable = true },
+                    navArgument("id") {})
             ) { navBack ->
                 val url = navBack.arguments?.getString("url") ?: "NOT FOUND"
                 val title = navBack.arguments?.getString("title") ?: "News Detail"
+                val id = navBack.arguments?.getString("id") ?: ""
+                val fav =
+                    loginModel.favorites.observeAsState().value?.firstOrNull { it.news.id == id } != null
 
-                Box(modifier = Modifier.fillMaxSize()) {
-                    MyWebView(url = url, modifier = Modifier.padding(top = 56.dp), initSettings = {
-                        it?.javaScriptEnabled = true
-                        it?.userAgentString =
-                            "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE};  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Mobile Safari/537.36"
-                    })
-                    TopAppBar(title = { Text(text = title,maxLines = 1) }, navigationIcon = {
+                Scaffold(topBar = {
+                    TopAppBar(title = { Text(text = title, maxLines = 1) }, navigationIcon = {
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "Back",
                             modifier = Modifier.clickable {
                                 navController.popBackStack()
                             })
+                    })
+                },
+                    floatingActionButton = {
+                        FloatingActionButton(onClick = {
+                            loginModel.toggleFavorite(id, !fav)
+
+                        }, backgroundColor = Color.Black) {
+                            Icon(
+                                Icons.Default.Favorite,
+                                contentDescription = "Favorite",
+                                tint = if (fav) Color.Red else Color.Gray
+
+                            )
+                        }
+                    }
+                ) {
+                    MyWebView(url = url, initSettings = {
+                        it?.javaScriptEnabled = true
+                        it?.userAgentString =
+                            "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE};  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Mobile Safari/537.36"
                     })
                 }
             }

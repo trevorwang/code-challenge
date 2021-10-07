@@ -68,4 +68,10 @@ class UserRepoImpl @Inject constructor(private val userApi: UserApi, private val
         }
     }
 
+    override suspend fun getFavorite(newsId: String): List<Favorite> {
+        return withContext(Dispatchers.IO) {
+            db.favoriteDao().loadAllByIds(arrayOf(newsId))
+        }
+    }
+
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.entity.Favorite
 import com.example.myapplication.data.entity.News
 import com.example.myapplication.data.entity.User
+import com.example.myapplication.repo.NewsRepo
 import com.example.myapplication.repo.UserRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -15,7 +16,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val userRepo: UserRepo,
+    private val newsRepo: NewsRepo
+) : ViewModel() {
 
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> = _user
@@ -42,8 +46,18 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
         }
     }
 
+    fun toggleFavorite(newsId: String, checked: Boolean) {
+        viewModelScope.launch {
+            val news = newsRepo.getNews(newsId)
+            if (news != null) {
+                toggleFavorite(news, checked = checked)
+            }
+        }
+    }
+
     fun login(username: String, password: String) {
         viewModelScope.launch {
+
             val result = userRepo.login(username = username, password = password)
             result?.let {
                 _user.value = it

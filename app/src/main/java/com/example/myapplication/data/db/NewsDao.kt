@@ -10,7 +10,7 @@ interface NewsDao {
     fun getAll(): List<News>
 
     @Query("SELECT * FROM news WHERE id IN (:newsIds)")
-    fun loadAllByIds(newsIds: IntArray): List<News>
+    fun loadAllByIds(newsIds: Array<String>): List<News>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
