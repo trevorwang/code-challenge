@@ -62,12 +62,16 @@ fun Main() {
         ) {
             composable(Screen.News.route) {
                 NewsScreen(newsViewModel, loginModel, lazyItems, onItemClicked = {
-                    navController.navigate("${Screen.WebView.route}?url=${it.url}")
+                    navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}")
                 }, navController = navController)
             }
 
             composable(Screen.Profile.route) {
-                ProfileScreen(navController = navController, loginModel, newsViewModel = newsViewModel)
+                ProfileScreen(
+                    navController = navController,
+                    loginModel,
+                    newsViewModel = newsViewModel
+                )
             }
 
             composable(Screen.Login.route) {
@@ -75,10 +79,11 @@ fun Main() {
             }
 
             composable(
-                "${Screen.WebView.route}?url={url}",
-                arguments = listOf(navArgument("url") {})
+                "${Screen.WebView.route}?url={url}&title={title}",
+                arguments = listOf(navArgument("url") {}, navArgument("title") { nullable = true })
             ) { navBack ->
                 val url = navBack.arguments?.getString("url") ?: "NOT FOUND"
+                val title = navBack.arguments?.getString("title") ?: "News Detail"
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     MyWebView(url = url, modifier = Modifier.padding(top = 56.dp), initSettings = {
@@ -86,7 +91,7 @@ fun Main() {
                         it?.userAgentString =
                             "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE};  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Mobile Safari/537.36"
                     })
-                    TopAppBar(title = { Text(text = "Description") }, navigationIcon = {
+                    TopAppBar(title = { Text(text = title,maxLines = 1) }, navigationIcon = {
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "Back",

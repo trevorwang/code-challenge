@@ -31,6 +31,6 @@ fun NewsScreen(
             onItemClicked = onItemClicked,
             navController = navController
         )
-        TopAppBar(title = { Text(text = "News") })
+        TopAppBar(title = { Text(text = Screen.News.name) })
     }
 }
