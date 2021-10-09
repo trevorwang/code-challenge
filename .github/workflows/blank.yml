@@ -6,7 +6,7 @@ name: CI
 on:
   release:
     branches:
-      - master
+      - main
     types: [published]
 
   # Allows you to run this workflow manually from the Actions tab
