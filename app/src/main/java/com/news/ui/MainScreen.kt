@@ -37,7 +37,6 @@ fun Main() {
     val newsViewModel = viewModel<NewsViewModel>()
     val loginModel = viewModel<LoginViewModel>()
     Scaffold(bottomBar = {
-
         Timber.d("current route : ${navController.currentDestination?.route}")
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
@@ -47,10 +46,9 @@ fun Main() {
             ).contains(currentDestination?.route)
         ) {
             BottomNavigation() {
-//                val navBackStackEntry by navController.currentBackStackEntryAsState()
-//                val currentDestination = navBackStackEntry?.destination
                 items.forEach { screen ->
-                    BottomNavigationItem(selected = currentDestination?.hierarchy?.any { it.route === screen.route } == true,
+                    BottomNavigationItem(
+                        selected = currentDestination?.hierarchy?.any { it.route === screen.route } == true,
                         icon = screen.icon,
                         label = { Text(screen.name) },
                         onClick = {
@@ -61,18 +59,19 @@ fun Main() {
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        })
+                        },
+                    )
                 }
             }
         }
     }) { paddingValues ->
-        val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
         NavHost(
             navController = navController,
             startDestination = Screen.News.route,
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Screen.News.route) {
+                val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
                 NewsScreen(loginViewModel = loginModel, lazyItems = lazyItems, onItemClicked = {
                     navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}&id=${it.id}")
                 }, navController = navController)
