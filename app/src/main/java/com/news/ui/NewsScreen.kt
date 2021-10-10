@@ -13,14 +13,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.LazyPagingItems
 import com.news.data.entity.News
 import com.news.viewmodel.LoginViewModel
-import com.news.viewmodel.NewsViewModel
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 @ExperimentalPagingApi
 @Composable
 fun NewsScreen(
-    vm: NewsViewModel,
     loginViewModel: LoginViewModel,
     lazyItems: LazyPagingItems<News>,
     onItemClicked: ((News) -> Unit)? = null,
@@ -29,7 +27,6 @@ fun NewsScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         NewsListContent(
             modifier = Modifier.padding(top = 56.dp),
-            vm = vm,
             loginViewModel = loginViewModel,
             lazyItems = lazyItems,
             onItemClicked = onItemClicked,

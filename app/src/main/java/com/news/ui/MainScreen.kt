@@ -73,7 +73,7 @@ fun Main() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Screen.News.route) {
-                NewsScreen(newsViewModel, loginModel, lazyItems, onItemClicked = {
+                NewsScreen(loginViewModel = loginModel, lazyItems = lazyItems, onItemClicked = {
                     navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}&id=${it.id}")
                 }, navController = navController)
             }

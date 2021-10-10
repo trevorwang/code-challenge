@@ -45,7 +45,6 @@ import kotlin.time.ExperimentalTime
 @ExperimentalPagingApi
 fun NewsListContent(
     modifier: Modifier = Modifier,
-    vm: NewsViewModel,
     loginViewModel: LoginViewModel,
     lazyItems: LazyPagingItems<News>,
     onItemClicked: ((News) -> Unit)? = null,
@@ -60,7 +59,6 @@ fun NewsListContent(
         }) {
         NewsList(
             lazyItems,
-            vm,
             onItemClicked = onItemClicked,
             loginViewModel = loginViewModel,
             navController = navController
@@ -73,7 +71,6 @@ fun NewsListContent(
 @ExperimentalPagingApi
 private fun NewsList(
     lazyItems: LazyPagingItems<News>,
-    vm: NewsViewModel,
     loginViewModel: LoginViewModel,
     onItemClicked: ((News) -> Unit)? = null,
     navController: NavController? = null
