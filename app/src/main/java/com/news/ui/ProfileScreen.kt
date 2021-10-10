@@ -23,14 +23,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.news.viewmodel.LoginViewModel
 import com.news.viewmodel.NewsViewModel
 import com.skydoves.landscapist.glide.GlideImage
+import kotlin.time.ExperimentalTime
 
 
+@ExperimentalTime
 @Composable
+@ExperimentalPagingApi
 fun ProfileScreen(
     navController: NavController?,
     loginViewModel: LoginViewModel,

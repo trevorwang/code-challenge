@@ -24,6 +24,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
@@ -36,9 +37,12 @@ import com.news.viewmodel.LoginViewModel
 import com.news.viewmodel.NewsViewModel
 import com.skydoves.landscapist.glide.GlideImage
 import com.news.R
+import kotlin.time.ExperimentalTime
 
 
+@ExperimentalTime
 @Composable
+@ExperimentalPagingApi
 fun NewsListContent(
     modifier: Modifier = Modifier,
     vm: NewsViewModel,
@@ -64,7 +68,9 @@ fun NewsListContent(
     }
 }
 
+@ExperimentalTime
 @Composable
+@ExperimentalPagingApi
 private fun NewsList(
     lazyItems: LazyPagingItems<News>,
     vm: NewsViewModel,

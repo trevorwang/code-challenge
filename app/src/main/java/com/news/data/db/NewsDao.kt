@@ -1,5 +1,6 @@
 package com.news.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.news.data.entity.News
 
@@ -14,8 +15,16 @@ interface NewsDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg news: News)
+    suspend fun insertAll(list: List<News>)
 
     @Delete
     fun delete(news: News)
+
+
+    @Query("SELECT * FROM news")
+    fun pagingSource(): PagingSource<Int, News>
+
+    @Query("DELETE from news where 1=1")
+    fun deleteAll()
+
 }

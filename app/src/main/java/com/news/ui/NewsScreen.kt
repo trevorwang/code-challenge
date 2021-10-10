@@ -9,11 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.LazyPagingItems
 import com.news.data.entity.News
 import com.news.viewmodel.LoginViewModel
 import com.news.viewmodel.NewsViewModel
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
+@ExperimentalPagingApi
 @Composable
 fun NewsScreen(
     vm: NewsViewModel,

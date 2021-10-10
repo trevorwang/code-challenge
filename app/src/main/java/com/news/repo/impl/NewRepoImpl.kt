@@ -27,7 +27,7 @@ class NewRepoImpl @Inject constructor(
 
     override suspend fun insertAll(newsList: List<News>) {
         return withContext(Dispatchers.IO) {
-            newsDatabase.newsDao().insertAll(*newsList.toTypedArray())
+            newsDatabase.newsDao().insertAll(newsList)
         }
     }
 }

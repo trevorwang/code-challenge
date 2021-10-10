@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 object DbModule {
     @Provides
     fun db(@ApplicationContext context: Context): NewsDatabase {
-        return Room.databaseBuilder(context, NewsDatabase::class.java, "demo")
+        return Room.databaseBuilder(context, NewsDatabase::class.java, "news.db")
             .addMigrations(Migration(1, 2) {
             })
             .build()

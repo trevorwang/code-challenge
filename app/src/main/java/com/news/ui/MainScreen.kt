@@ -24,10 +24,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.news.viewmodel.LoginViewModel
 import com.news.viewmodel.NewsViewModel
 import timber.log.Timber
+import kotlin.time.ExperimentalTime
 
 
 val items = listOf(Screen.News, Screen.Profile)
 
+@ExperimentalTime
+@OptIn(androidx.paging.ExperimentalPagingApi::class)
 @Composable
 fun Main() {
     val navController = rememberNavController()
@@ -63,8 +66,7 @@ fun Main() {
             }
         }
     }) { paddingValues ->
-        val lazyItems = newsViewModel.newsList.collectAsLazyPagingItems()
-        val user = loginModel.user.observeAsState()
+        val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
         NavHost(
             navController = navController,
             startDestination = Screen.News.route,
