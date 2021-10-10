@@ -83,13 +83,13 @@ private fun NavigationHost(
     newsViewModel: NewsViewModel,
     loginModel: LoginViewModel,
 ) {
+    val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
     NavHost(
         navController = navController,
         startDestination = Screen.News.route,
         modifier = Modifier.padding(paddingValues)
     ) {
         composable(Screen.News.route) {
-            val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
             NewsScreen(loginViewModel = loginModel, lazyItems = lazyItems, onItemClicked = {
                 navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}&id=${it.id}")
             }, navController = navController)
