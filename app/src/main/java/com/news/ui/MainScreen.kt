@@ -2,6 +2,7 @@ package com.news.ui
 
 import android.os.Build
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,13 +14,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.news.viewmodel.LoginViewModel
 import com.news.viewmodel.NewsViewModel
@@ -29,10 +34,10 @@ import kotlin.time.ExperimentalTime
 
 val items = listOf(Screen.News, Screen.Profile)
 
+@ExperimentalPagingApi
 @ExperimentalTime
-@OptIn(androidx.paging.ExperimentalPagingApi::class)
 @Composable
-fun Main() {
+fun MainScreen() {
     val navController = rememberNavController()
     val newsViewModel = viewModel<NewsViewModel>()
     val loginModel = viewModel<LoginViewModel>()
@@ -64,77 +69,97 @@ fun Main() {
                 }
             }
         }
-    }) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.News.route,
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            composable(Screen.News.route) {
-                val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
-                NewsScreen(loginViewModel = loginModel, lazyItems = lazyItems, onItemClicked = {
-                    navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}&id=${it.id}")
-                }, navController = navController)
-            }
+    }) {
+        NavigationHost(navController, it, newsViewModel, loginModel)
+    }
+}
 
-            composable(Screen.Profile.route) {
-                ProfileScreen(
-                    navController = navController,
-                    loginModel,
-                    newsViewModel = newsViewModel
+@ExperimentalPagingApi
+@ExperimentalTime
+@Composable
+private fun NavigationHost(
+    navController: NavHostController,
+    paddingValues: PaddingValues,
+    newsViewModel: NewsViewModel,
+    loginModel: LoginViewModel,
+) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.News.route,
+        modifier = Modifier.padding(paddingValues)
+    ) {
+        composable(Screen.News.route) {
+            val lazyItems = newsViewModel.newsList.flow.collectAsLazyPagingItems()
+            NewsScreen(loginViewModel = loginModel, lazyItems = lazyItems, onItemClicked = {
+                navController.navigate("${Screen.WebView.route}?url=${it.url}&title=${it.title}&id=${it.id}")
+            }, navController = navController)
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen(
+                navController = navController,
+                loginModel,
+                newsViewModel = newsViewModel
+            )
+        }
+
+        composable(Screen.Login.route) {
+            LoginScreen(vm = loginModel, navController = navController)
+        }
+
+        composable(
+            "${Screen.WebView.route}?url={url}&title={title}&id={id}",
+            arguments = listOf(
+                navArgument("url") {},
+                navArgument("title") { nullable = true },
+                navArgument("id") {})
+        ) {
+            DetailScreen(it, loginModel, navController)
+        }
+    }
+}
+
+@Composable
+fun DetailScreen(
+    navBack: NavBackStackEntry,
+    loginModel: LoginViewModel,
+    navController: NavController,
+) {
+    val url = navBack.arguments?.getString("url") ?: "NOT FOUND"
+    val title = navBack.arguments?.getString("title") ?: "News Detail"
+    val id = navBack.arguments?.getString("id") ?: ""
+    val fav =
+        loginModel.favorites.observeAsState().value?.firstOrNull { it.news.id == id } != null
+
+    Scaffold(topBar = {
+        TopAppBar(title = { Text(text = title, maxLines = 1) }, navigationIcon = {
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Back",
+                modifier = Modifier.clickable {
+                    navController.popBackStack()
+                })
+        })
+    },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                loginModel.toggleFavorite(id, !fav)
+
+            }, backgroundColor = Color.Black) {
+                Icon(
+                    Icons.Default.Favorite,
+                    contentDescription = "Favorite",
+                    tint = if (fav) Color.Red else Color.Gray
+
                 )
             }
-
-            composable(Screen.Login.route) {
-                LoginScreen(vm = loginModel, navController = navController)
-            }
-
-            composable(
-                "${Screen.WebView.route}?url={url}&title={title}&id={id}",
-                arguments = listOf(
-                    navArgument("url") {},
-                    navArgument("title") { nullable = true },
-                    navArgument("id") {})
-            ) { navBack ->
-                val url = navBack.arguments?.getString("url") ?: "NOT FOUND"
-                val title = navBack.arguments?.getString("title") ?: "News Detail"
-                val id = navBack.arguments?.getString("id") ?: ""
-                val fav =
-                    loginModel.favorites.observeAsState().value?.firstOrNull { it.news.id == id } != null
-
-                Scaffold(topBar = {
-                    TopAppBar(title = { Text(text = title, maxLines = 1) }, navigationIcon = {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = "Back",
-                            modifier = Modifier.clickable {
-                                navController.popBackStack()
-                            })
-                    })
-                },
-                    floatingActionButton = {
-                        FloatingActionButton(onClick = {
-                            loginModel.toggleFavorite(id, !fav)
-
-                        }, backgroundColor = Color.Black) {
-                            Icon(
-                                Icons.Default.Favorite,
-                                contentDescription = "Favorite",
-                                tint = if (fav) Color.Red else Color.Gray
-
-                            )
-                        }
-                    }
-                ) {
-                    MyWebView(url = url, initSettings = {
-                        it?.javaScriptEnabled = true
-                        it?.userAgentString =
-                            "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE};  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Mobile Safari/537.36"
-                    })
-                }
-            }
-
         }
+    ) {
+        MyWebView(url = url, initSettings = {
+            it?.javaScriptEnabled = true
+            it?.userAgentString =
+                "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE};  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Mobile Safari/537.36"
+        })
     }
 }
 
