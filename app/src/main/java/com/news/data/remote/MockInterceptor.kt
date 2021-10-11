@@ -22,8 +22,8 @@ class MockInterceptor @Inject constructor() : Interceptor {
                 "code": 200,
                 "msg": "success", "data": {
                     "userId": 1,
-                    "nickname": "adidas_demo",
-                    "avatar": "https://static.adidas.com.cn/images/logo.png"
+                    "nickname": "demo",
+                    "avatar": "https://img0.baidu.com/it/u=3088931474,1884625932&fm=26&fmt=auto"
                 } 
             }
             """.trimIndent()

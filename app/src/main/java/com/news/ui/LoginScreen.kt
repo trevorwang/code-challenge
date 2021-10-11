@@ -6,14 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalAirport
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -34,22 +34,17 @@ val labelStyle = TextStyle(
 
 @Composable
 fun LoginScreen(vm: LoginViewModel, navController: NavController) {
-    var username by remember { mutableStateOf("adidas_demo") }
+    var username by remember { mutableStateOf("demo") }
     var pass by remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
-    Surface(color = Color.Black) {
+    Surface {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(64.dp)
-            )
+
+            Icon(imageVector = Icons.Default.LocalAirport, contentDescription = null)
 
             Column(
                 modifier = Modifier
