@@ -1,9 +1,9 @@
 package com.news.repo.impl
 
-import com.news.data.db.NewsDatabase
+import com.news.data.local.TodoDatabase
 import com.news.data.entity.News
 import com.news.data.entity.NewsListResult
-import com.news.data.net.NewsApi
+import com.news.data.remote.NewsApi
 import com.news.repo.NewsRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class NewRepoImpl @Inject constructor(
     private val newsApi: NewsApi,
-    private val newsDatabase: NewsDatabase
+    private val todoDatabase: TodoDatabase
 ) : NewsRepo {
     override suspend fun nbaIndex(page: Int, size: Int): NewsListResult {
         Timber.tag("APP").i("nbaIndex from NewRepoImpl")
@@ -21,13 +21,13 @@ class NewRepoImpl @Inject constructor(
 
     override suspend fun getNews(id: String): News? {
         return withContext(Dispatchers.IO) {
-            newsDatabase.newsDao().loadAllByIds(arrayOf(id)).firstOrNull()
+            todoDatabase.newsDao().loadAllByIds(arrayOf(id)).firstOrNull()
         }
     }
 
     override suspend fun insertAll(newsList: List<News>) {
         return withContext(Dispatchers.IO) {
-            newsDatabase.newsDao().insertAll(newsList)
+            todoDatabase.newsDao().insertAll(newsList)
         }
     }
 }

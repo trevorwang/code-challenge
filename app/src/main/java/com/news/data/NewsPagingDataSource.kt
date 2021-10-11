@@ -2,16 +2,13 @@ package com.news.data
 
 import androidx.paging.*
 import androidx.room.withTransaction
-import com.news.data.db.NewsDatabase
+import com.news.data.local.TodoDatabase
 import com.news.data.entity.News
 import com.news.data.entity.RemoteKey
-import com.news.data.net.NewsApi
+import com.news.data.remote.NewsApi
 import com.news.repo.NewsRepo
-import kotlinx.coroutines.delay
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 class NewsPagingDataSource @Inject constructor(
@@ -45,13 +42,13 @@ class NewsPagingDataSource @Inject constructor(
 @ExperimentalTime
 @ExperimentalPagingApi
 class NewsRemoteMediator @Inject constructor(
-    private val newsDatabase: NewsDatabase,
+    private val todoDatabase: TodoDatabase,
     private val newsApi: NewsApi
 ) :
     RemoteMediator<Int, News>() {
 
-    private val remoteKeyDao = newsDatabase.remoteKeyDao()
-    private val newsDao = newsDatabase.newsDao()
+    private val remoteKeyDao = todoDatabase.remoteKeyDao()
+    private val newsDao = todoDatabase.newsDao()
     val query = "news"
 
 
@@ -62,7 +59,7 @@ class NewsRemoteMediator @Inject constructor(
                 LoadType.REFRESH -> null
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    newsDatabase.withTransaction {
+                    todoDatabase.withTransaction {
                         remoteKeyDao.remoteKeyByQuery(query)
                     }.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
                 }
@@ -70,7 +67,7 @@ class NewsRemoteMediator @Inject constructor(
             val page = loadKey ?: 1
             val size = state.config.pageSize
             val result = newsApi.nbaIndex(page = page, size)
-            newsDatabase.withTransaction {
+            todoDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     remoteKeyDao.deleteByQuery(query)
                     newsDao.deleteAll()

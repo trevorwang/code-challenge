@@ -1,4 +1,4 @@
-package com.news.data.net
+package com.news.data.remote
 
 import okhttp3.*
 import javax.inject.Inject

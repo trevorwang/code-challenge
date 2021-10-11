@@ -3,7 +3,7 @@ package com.news.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
-import com.news.data.db.NewsDatabase
+import com.news.data.local.TodoDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,8 +14,8 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object DbModule {
     @Provides
-    fun db(@ApplicationContext context: Context): NewsDatabase {
-        return Room.databaseBuilder(context, NewsDatabase::class.java, "news.db")
+    fun db(@ApplicationContext context: Context): TodoDatabase {
+        return Room.databaseBuilder(context, TodoDatabase::class.java, "news.db")
             .addMigrations(Migration(1, 2) {
             })
             .build()

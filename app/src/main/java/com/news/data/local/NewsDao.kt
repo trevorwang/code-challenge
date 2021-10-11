@@ -1,4 +1,4 @@
-package com.news.data.db
+package com.news.data.local
 
 import androidx.paging.PagingSource
 import androidx.room.*

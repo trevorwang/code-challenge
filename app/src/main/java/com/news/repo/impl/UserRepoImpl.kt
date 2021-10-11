@@ -1,16 +1,16 @@
 package com.news.repo.impl
 
-import com.news.data.db.NewsDatabase
+import com.news.data.local.TodoDatabase
 import com.news.data.entity.Favorite
 import com.news.data.entity.News
 import com.news.data.entity.User
-import com.news.data.net.UserApi
+import com.news.data.remote.UserApi
 import com.news.repo.UserRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class UserRepoImpl @Inject constructor(private val userApi: UserApi, private val db: NewsDatabase) :
+class UserRepoImpl @Inject constructor(private val userApi: UserApi, private val db: TodoDatabase) :
     UserRepo {
     override suspend fun login(username: String, password: String): User? {
         return withContext(Dispatchers.IO) {

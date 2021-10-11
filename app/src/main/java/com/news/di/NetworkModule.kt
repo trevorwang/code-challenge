@@ -1,9 +1,9 @@
 package com.news.di
 
 import com.news.baseUrl
-import com.news.data.net.MockInterceptor
-import com.news.data.net.NewsApi
-import com.news.data.net.UserApi
+import com.news.data.remote.MockInterceptor
+import com.news.data.remote.NewsApi
+import com.news.data.remote.UserApi
 import com.news.token
 import dagger.Module
 import dagger.Provides

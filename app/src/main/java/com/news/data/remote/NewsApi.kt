@@ -1,4 +1,4 @@
-package com.news.data.net
+package com.news.data.remote
 
 import com.news.data.entity.NewsListResult
 import retrofit2.http.GET
