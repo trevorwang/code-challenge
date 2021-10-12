@@ -48,7 +48,7 @@ object NetworkModule {
             .addInterceptor(mockInterceptor)
             .addInterceptor { chain ->
                 val req = chain.request()
-                val url = req.url().newBuilder()
+                val url = req.url.newBuilder()
                     .addQueryParameter("key", token).build()
                 chain.proceed(req.newBuilder().url(url).build())
             }

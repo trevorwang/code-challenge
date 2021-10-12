@@ -1,6 +1,7 @@
 package com.news.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,14 +29,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.news.data.entity.News
 import com.news.viewmodel.LoginViewModel
-import com.news.viewmodel.NewsViewModel
-import com.skydoves.landscapist.glide.GlideImage
 import com.news.R
 import kotlin.time.ExperimentalTime
 
@@ -48,7 +47,7 @@ fun NewsListContent(
     loginViewModel: LoginViewModel,
     lazyItems: LazyPagingItems<News>,
     onItemClicked: ((News) -> Unit)? = null,
-    navController: NavController? = null
+    navController: NavController? = null,
 ) {
     val refresh = lazyItems.loadState.refresh is LoadState.Loading
     SwipeRefresh(
@@ -73,7 +72,7 @@ private fun NewsList(
     lazyItems: LazyPagingItems<News>,
     loginViewModel: LoginViewModel,
     onItemClicked: ((News) -> Unit)? = null,
-    navController: NavController? = null
+    navController: NavController? = null,
 ) {
     val favorites by loginViewModel.favorites.observeAsState()
     val user by loginViewModel.user.observeAsState()
@@ -145,19 +144,20 @@ fun NewsRow(
             modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            GlideImage(
-                imageModel = news.picUrl,
+            Image(
+                painter = rememberImagePainter(data = news.picUrl, builder = {
+                    crossfade(true)
+                    transformations(CircleCropTransformation())
+                    placeholder(R.drawable.ic_launcher_foreground)
+                    error(R.drawable.ic_launcher_foreground)
+                }),
+                contentDescription = null,
                 modifier = Modifier
                     .size(64.dp, 64.dp)
                     .border(
                         border = BorderStroke(1.dp, color = Color.Transparent),
                         shape = RoundedCornerShape(4.dp)
                     ),
-                contentScale = ContentScale.Crop,
-                requestOptions = RequestOptions().override(256, 256)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .centerCrop(),
-                placeHolder = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
             )
             Column(
                 Modifier

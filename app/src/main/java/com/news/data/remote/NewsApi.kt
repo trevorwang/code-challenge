@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface NewsApi {
 
-    @GET("nba/index")
+    @GET("generalnews/index")
     suspend fun nbaIndex(
         @Query("page") page: Int = 1,
         @Query("num") size: Int = 20,

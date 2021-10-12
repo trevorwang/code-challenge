@@ -1,6 +1,7 @@
 package com.news.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,24 +12,19 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
+import com.news.R
 import com.news.viewmodel.LoginViewModel
-import com.news.viewmodel.NewsViewModel
-import com.skydoves.landscapist.glide.GlideImage
 import kotlin.time.ExperimentalTime
 
 
@@ -38,7 +34,6 @@ import kotlin.time.ExperimentalTime
 fun ProfileScreen(
     navController: NavController?,
     loginViewModel: LoginViewModel,
-    newsViewModel: NewsViewModel
 ) {
     val user = loginViewModel.user.observeAsState()
     val favorites = loginViewModel.favorites.observeAsState()
@@ -56,8 +51,12 @@ fun ProfileScreen(
                     }
 
                 }) {
-                    GlideImage(
-                        imageModel = user.value?.avatar ?: "",
+                    Image(
+                        painter = rememberImagePainter(data = user.value?.avatar, builder = {
+                            transformations(CircleCropTransformation())
+                            error(R.drawable.ic_launcher_foreground)
+                        }),
+                        contentDescription = null,
                         modifier = Modifier
                             .size(120.dp, 120.dp)
                             .padding(8.dp)
@@ -65,13 +64,6 @@ fun ProfileScreen(
                                 border = BorderStroke(1.dp, color = Color.Transparent),
                                 shape = RoundedCornerShape(4.dp)
                             ),
-                        contentScale = ContentScale.Fit,
-                        requestOptions = RequestOptions().override(256, 256)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .centerCrop(),
-                        placeHolder = Icons.Default.AccountCircle,
-                        error = Icons.Default.AccountCircle,
-                        colorFilter = ColorFilter.tint(Color.White)
                     )
 
                     Column(modifier = Modifier.padding(8.dp)) {

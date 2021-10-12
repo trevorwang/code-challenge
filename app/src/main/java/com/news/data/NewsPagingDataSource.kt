@@ -52,6 +52,10 @@ class NewsRemoteMediator @Inject constructor(
     val query = "news"
 
 
+    override suspend fun initialize(): InitializeAction {
+        return InitializeAction.SKIP_INITIAL_REFRESH
+    }
+
     override suspend fun load(loadType: LoadType, state: PagingState<Int, News>): MediatorResult {
         Timber.tag("MEDIATOR").d("load Type --->   $loadType")
         return try {

@@ -99,7 +99,6 @@ private fun NavigationHost(
             ProfileScreen(
                 navController = navController,
                 loginModel,
-                newsViewModel = newsViewModel
             )
         }
 
