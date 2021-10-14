@@ -50,7 +50,7 @@ fun MainScreen() {
                 Screen.Profile.route
             ).contains(currentDestination?.route)
         ) {
-            BottomNavigation() {
+            BottomNavigation {
                 items.forEach { screen ->
                     BottomNavigationItem(
                         selected = currentDestination?.hierarchy?.any { it.route === screen.route } == true,
