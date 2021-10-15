@@ -14,12 +14,15 @@ interface TodoDao {
     suspend fun insertAll(list: List<Todo>)
 
     @Query("SELECT * FROM todo")
-    suspend fun pagingSource(): PagingSource<Int, Todo>
+    fun pagingSource(): PagingSource<Int, Todo>
 
     @Query("DELETE from todo where 1=1")
     suspend fun deleteAll(): Int
 
     @Delete
     suspend fun delete(todo: Todo): Int
+
+    @Update
+    suspend fun update(todo: Todo)
 
 }

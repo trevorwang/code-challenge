@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -32,7 +33,7 @@ import timber.log.Timber
 import kotlin.time.ExperimentalTime
 
 
-val items = listOf(Screen.News, Screen.Profile)
+val items = listOf(Screen.News, Screen.Todo)
 
 @ExperimentalPagingApi
 @ExperimentalTime
@@ -47,7 +48,7 @@ fun MainScreen() {
         val currentDestination = navBackStackEntry?.destination
         if (arrayOf(
                 Screen.News.route,
-                Screen.Profile.route
+                Screen.Todo.route
             ).contains(currentDestination?.route)
         ) {
             BottomNavigation {
@@ -114,6 +115,10 @@ private fun NavigationHost(
                 navArgument("id") {})
         ) {
             DetailScreen(it, loginModel, navController)
+        }
+
+        composable(Screen.Todo.route) {
+            TodoScreen(hiltViewModel())
         }
     }
 }

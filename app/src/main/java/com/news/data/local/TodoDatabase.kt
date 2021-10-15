@@ -11,4 +11,5 @@ abstract class TodoDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun userDao(): UserDao
     abstract fun remoteKeyDao(): RemoteKeyDao
+    abstract fun todoDao(): TodoDao
 }

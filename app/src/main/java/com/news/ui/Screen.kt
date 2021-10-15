@@ -4,6 +4,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Feed
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Task
 import androidx.compose.runtime.Composable
 
 
@@ -20,4 +21,7 @@ sealed class Screen(val route: String, val name: String, val icon: @Composable (
     object WebView : Screen("webview", "WebView", icon = {})
 
     object Login : Screen("login", "Login", icon = {})
+    object Todo : Screen("todo", "Todos", icon = {
+        Icon(Icons.Default.Task, contentDescription = null)
+    })
 }
